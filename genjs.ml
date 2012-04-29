@@ -400,7 +400,7 @@ and gen_expr ctx e =
 		print ctx " %s " (Ast.s_binop op);
 		gen_value ctx e2;
 	| TField (x,"iterator") when Common.defined ctx.com "js-iterator-wrap" ->
-		print ctx "$iterator(";
+		print ctx "ArrayHelper.iter(";
 		gen_value ctx x;
 		print ctx ")";
 	| TField (x,s) ->
