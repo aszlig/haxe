@@ -343,7 +343,12 @@ let rec gen_call ctx e el =
 			spr ctx ")";
 		);
 	| TCall (x,_) , el when (match x.eexpr with TLocal { v_name = "__js__" } -> false | _ -> true) ->
-		spr ctx "(";
+		(match x.eexpr with
+		| TLocal { v_name = "iterator" } ->
+			spr ctx "ArrayHelper.iter(";
+		| _ ->
+			spr ctx "(";
+		);
 		gen_value ctx e;
 		spr ctx ")";
 		spr ctx "(";
