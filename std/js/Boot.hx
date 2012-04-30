@@ -24,6 +24,8 @@
  */
 package js;
 
+import FunctionHelper;
+
 class Boot {
 
 	private static function __unhtml(s : String) {
@@ -184,17 +186,5 @@ class Boot {
 		else throw "Cannot cast " +Std.string(o) + " to " +Std.string(t);
 	}
 	
-	private static function __init() {
-		untyped {
-			Function.prototype["$bind"] = function(o){
-				var f = function(){
-					return f.method.apply(f.scope, untyped __js__("arguments"));
-				}
-				f.scope = o;
-				f.method = __this__;
-				return f;
-			}
-		}
-	}
-
+	private static function __init() {}
 }

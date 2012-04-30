@@ -417,14 +417,15 @@ and gen_expr ctx e =
 	| TClosure (x,s) ->
 		(match x.eexpr with
 		| TConst _ | TLocal _ ->  
-			gen_value ctx x; 
-			print ctx ".%s.$bind(" s; 
-			gen_value ctx x; 
+			print ctx "FunctionHelper.bind(";
+			gen_value ctx x;
+			print ctx ".%s," s;
+			gen_value ctx x;
 			print ctx ")"
 		| _ -> 
 			print ctx "($_=";
 			gen_value ctx x;
-			print ctx ",$_.%s.$bind($_))" s)
+			print ctx ",FunctionHelper.bind($_.%s, $_))" s)
 	| TTypeExpr t ->
 		spr ctx (ctx.type_accessor t)
 	| TParenthesis e ->
