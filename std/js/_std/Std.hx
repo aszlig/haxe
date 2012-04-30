@@ -61,10 +61,8 @@ import js.Boot;
 	}
 
 	static function __init__() : Void untyped {
-		String.prototype.__class__ = __feature__("Type.resolveClass",$hxClasses["String"] = String,String);
-		String.__name__ = ["String"];
-		Array.prototype.__class__ = __feature__("Type.resolveClass",$hxClasses["Array"] = Array,Array);
-		Array.__name__ = ["Array"];
+		__feature__("Type.resolveClass", $hxClasses["String"] = String);
+		__feature__("Type.resolveClass", $hxClasses["Array"] = Array);
 		var Int = __feature__("Type.resolveClass", $hxClasses["Int"] = { __name__ : ["Int"] }, { __name__ : ["Int"] });
 		var Dynamic = __feature__("Type.resolveClass", $hxClasses["Dynamic"] = { __name__ : ["Dynamic"] }, { __name__ : ["Dynamic"] });
 		var Float = __feature__("Type.resolveClass", $hxClasses["Float"] = __js__("Number"), __js__("Number"));

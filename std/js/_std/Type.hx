@@ -57,7 +57,22 @@ enum ValueType {
 
 
 	public static function getClassName( c : Class<Dynamic> ) : String {
-		var a : Array<String> = untyped c.__name__;
+		var a : Array<String> = switch( untyped __js__("typeof")(c) ) {
+			case "object":
+				if( untyped Object.prototype.toString.call(c) == "[object Array]" ) {
+					["Array"];
+				} else {
+					untyped c.__name__;
+				}
+			case "function":
+				switch( untyped Object.prototype.toString.call(c.prototype) ) {
+					case "[object String]": ["String"];
+					case "[object Array]": ["Array"];
+					default: untyped c.__name__;
+				}
+			case "string": ["String"];
+			default: untyped c.__name__;
+		}
 		return a.join(".");
 	}
 
@@ -69,7 +84,7 @@ enum ValueType {
 	public static function resolveClass( name : String ) : Class<Dynamic> untyped {
 		var cl : Class<Dynamic> = $hxClasses[name];
 		// ensure that this is a class
-		if( cl == null || cl.__name__ == null )
+		if( cl == null || (name != "Array" && name != "String" && cl.__name__ == null) )
 			return null;
 		return cl;
 	}
@@ -172,11 +187,17 @@ enum ValueType {
 			var c = v.__class__;
 			if( c != null )
 				return TClass(c);
+			if( Object.prototype.toString.call(v) == "[object Array]" )
+				return TClass(Array);
 			return TObject;
 		case "function":
 			if( v.__name__ != null )
 				return TObject;
-			return TFunction;
+			switch( Object.prototype.toString.call(v.prototype) ) {
+				case "[object Array]": return TObject;
+				case "[object String]": return TObject;
+				default: return TFunction;
+			}
 		case "undefined":
 			return TNull;
 		default:
