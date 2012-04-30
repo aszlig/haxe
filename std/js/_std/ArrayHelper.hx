@@ -47,7 +47,7 @@ class ArrayHelper
 		}
 	}
 
-	public static function iter<T>( it : Iterable<T> ) : Void -> Iterator<T>
+	@:keep public static function iter<T>( it : Iterable<T> ) : Void -> Iterator<T>
 	{
 		if (Std.is(it, Array)) {
 			return function() return ArrayHelper.get_iterator(cast it);
