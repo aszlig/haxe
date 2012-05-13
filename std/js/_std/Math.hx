@@ -49,19 +49,20 @@
 	static function pow(v:Float,exp:Float):Float;
 	static function random() : Float;
 
-	static function isFinite( f : Float ) : Bool;
-	static function isNaN( f : Float ) : Bool;
+	static inline function isFinite( f : Float ) : Bool
+	{
+		return untyped __js__("isFinite")(f);
+	}
+
+	static inline function isNaN( f : Float ) : Bool
+	{
+		return untyped __js__("isNaN")(f);
+	}
 
 	private static function __init__() : Void untyped {
 		Math.NaN = Number["NaN"];
 		Math.NEGATIVE_INFINITY = Number["NEGATIVE_INFINITY"];
 		Math.POSITIVE_INFINITY = Number["POSITIVE_INFINITY"];
-		Math.isFinite = function(i) {
-			return __js__("isFinite")(i);
-		};
-		Math.isNaN = function(i) {
-			return __js__("isNaN")(i);
-		};
 		__feature__("Type.resolveClass", $hxClasses["Math"] = Math);
 	}
 }
