@@ -66,17 +66,12 @@ extern class Math
 		Math.NEGATIVE_INFINITY = Number["NEGATIVE_INFINITY"];
 		Math.POSITIVE_INFINITY = Number["POSITIVE_INFINITY"];
 	#end
-	#if js
-		__feature__("Type.resolveClass",$hxClasses['Math'] = Math);
-	#end
 		Math.isFinite = function(i) {
 			return
 			#if flash9
 			__global__["isFinite"](i);
 			#elseif flash
 			_global["isFinite"](i);
-			#elseif js
-			__js__("isFinite")(i);
 			#else
 			false;
 			#end
@@ -87,8 +82,6 @@ extern class Math
 			__global__["isNaN"](i);
 			#elseif flash
 			_global["isNaN"](i);
-			#elseif js
-			__js__("isNaN")(i);
 			#else
 			false;
 			#end
