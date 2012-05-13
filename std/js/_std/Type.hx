@@ -59,13 +59,17 @@ enum ValueType {
 	public static function getClassName( c : Class<Dynamic> ) : String {
 		var a : Array<String> = switch( untyped __js__("typeof")(c) ) {
 			case "object":
-				if( untyped Object.prototype.toString.call(c) == "[object Array]" ) {
-					["Array"];
-				} else {
-					untyped c.__name__;
+				switch( untyped Object.prototype.toString.call(c) ) {
+					case "[object Math]": ["Math"];
+					case "[object Date]": ["Date"];
+					// no "[object String]" - handled below.
+					case "[object Array]": ["Array"];
+					default: untyped c.__name__;
 				}
 			case "function":
 				switch( untyped Object.prototype.toString.call(c.prototype) ) {
+					case "[object Math]": ["Math"];
+					case "[object Date]": ["Date"];
 					case "[object String]": ["String"];
 					case "[object Array]": ["Array"];
 					default: untyped c.__name__;
@@ -84,9 +88,13 @@ enum ValueType {
 	public static function resolveClass( name : String ) : Class<Dynamic> untyped {
 		var cl : Class<Dynamic> = $hxClasses[name];
 		// ensure that this is a class
-		if( cl == null || (name != "Array" && name != "String" && cl.__name__ == null) )
-			return null;
-		return cl;
+		return cl == null ? null : switch( name ) {
+			case "Math": cl;
+			case "Date": cl;
+			case "String": cl;
+			case "Array": cl;
+			default: cl.__name__ == null ? null : cl;
+		}
 	}
 
 	public static function resolveEnum( name : String ) : Enum<Dynamic> untyped {
@@ -187,16 +195,22 @@ enum ValueType {
 			var c = v.__class__;
 			if( c != null )
 				return TClass(c);
-			if( Object.prototype.toString.call(v) == "[object Array]" )
-				return TClass(Array);
-			return TObject;
+			return switch( Object.prototype.toString.call(v) ) {
+				case "[object Array]": TClass(Array);
+				// no "[object String]" - handled above.
+				case "[object Math]": TClass(Math);
+				case "[object Date]": TClass(Date);
+				default: TObject;
+			}
 		case "function":
 			if( v.__name__ != null )
 				return TObject;
-			switch( Object.prototype.toString.call(v.prototype) ) {
-				case "[object Array]": return TObject;
-				case "[object String]": return TObject;
-				default: return TFunction;
+			return switch( Object.prototype.toString.call(v.prototype) ) {
+				case "[object Math]": TObject;
+				case "[object Date]": TObject;
+				case "[object Array]": TObject;
+				case "[object String]": TObject;
+				default: TFunction;
 			}
 		case "undefined":
 			return TNull;

@@ -85,7 +85,6 @@
 				+":"+(if( mi < 10 ) "0"+mi else ""+mi)
 				+":"+(if( s < 10 ) "0"+s else ""+s);
 		};
-		d.prototype.__class__ = __feature__('Type.resolveClass',$hxClasses['Date'] = d,d);
-		d.__name__ = ["Date"];
+		__feature__("Type.resolveClass", $hxClasses["Date"] = Date);
 	}
 }

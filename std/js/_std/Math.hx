@@ -53,16 +53,15 @@
 	static function isNaN( f : Float ) : Bool;
 
 	private static function __init__() : Void untyped {
-		Math.__name__ = ["Math"];
 		Math.NaN = Number["NaN"];
 		Math.NEGATIVE_INFINITY = Number["NEGATIVE_INFINITY"];
 		Math.POSITIVE_INFINITY = Number["POSITIVE_INFINITY"];
-		__feature__("Type.resolveClass",$hxClasses['Math'] = Math);
 		Math.isFinite = function(i) {
 			return __js__("isFinite")(i);
 		};
 		Math.isNaN = function(i) {
 			return __js__("isNaN")(i);
 		};
+		__feature__("Type.resolveClass", $hxClasses["Math"] = Math);
 	}
 }
