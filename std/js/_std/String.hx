@@ -36,12 +36,12 @@
 	static function fromCharCode( code : Int ) : String;
 
 	inline function charCodeAt( index : Int) : Null<Int>
-    {
-        return StringHelper.charCodeAt(this, index);
-    }
+	{
+		return StringHelper.charCodeAt(this, index);
+	}
 
 	function substr( pos : Int, ?len : Int ) : String
-    {
-        return StringHelper.substr(this, pos, len);
-    }
+	{
+		return StringHelper.substr(this, pos, len);
+	}
 }

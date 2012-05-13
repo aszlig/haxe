@@ -25,25 +25,25 @@
 
 class StringHelper
 {
-    public static function charCodeAt(s:String, i)
-    {
-        var x = (untyped s).charCodeAt(i);
-        if( x != x ) // fast isNaN
-            return untyped undefined; // isNaN will still return true
-        return x;
-    }
+	public static function charCodeAt(s:String, i)
+	{
+		var x = (untyped s).charCodeAt(i);
+		if( x != x ) // fast isNaN
+			return untyped undefined; // isNaN will still return true
+		return x;
+	}
 
-    public static function substr(s:String, pos, len)
-    {
-        if( pos != null && pos != 0 && len != null && len < 0 ) return "";
-        if( len == null ) len = s.length;
-        if( pos < 0 ){
-            pos = s.length + pos;
-            if( pos < 0 ) pos = 0;
-        }else if( len < 0 ){
-            len = s.length + len - pos;
-        }
+	public static function substr(s:String, pos, len)
+	{
+		if( pos != null && pos != 0 && len != null && len < 0 ) return "";
+		if( len == null ) len = s.length;
+		if( pos < 0 ){
+			pos = s.length + pos;
+			if( pos < 0 ) pos = 0;
+		}else if( len < 0 ){
+			len = s.length + len - pos;
+		}
 
-        return (untyped s).substr(pos, len);
-    }
+		return (untyped s).substr(pos, len);
+	}
 }
