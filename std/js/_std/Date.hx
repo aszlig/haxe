@@ -34,57 +34,60 @@
 	function getMonth() : Int;
 	function getDate() : Int;
 	function getDay() : Int;
-	function toString():String;
-	static function now() : Date;
-	static function fromTime( t : Float ) : Date;
-	static function fromString( s : String ) : Date;
+
+	inline function toString():String
+	{
+		var date : Date = untyped __this__;
+		var m = date.getMonth() + 1;
+		var d = date.getDate();
+		var h = date.getHours();
+		var mi = date.getMinutes();
+		var s = date.getSeconds();
+		return date.getFullYear()
+			+"-"+(if( m < 10 ) "0"+m else ""+m)
+			+"-"+(if( d < 10 ) "0"+d else ""+d)
+			+" "+(if( h < 10 ) "0"+h else ""+h)
+			+":"+(if( mi < 10 ) "0"+mi else ""+mi)
+			+":"+(if( s < 10 ) "0"+s else ""+s);
+	}
+
+	static inline function now() : Date
+	{
+		return untyped __new__(Date);
+	}
+
+	static inline function fromTime( t : Float ) : Date
+	{
+		var d : Date = untyped __new__(Date);
+		untyped d["setTime"]( t );
+		return d;
+	}
+
+	static inline function fromString( s : String ) : Date
+	{
+		switch( s.length ) {
+		case 8: // hh:mm:ss
+			var k = s.split(":");
+			var d : Date = untyped __new__(Date);
+			untyped d["setTime"](0);
+			untyped d["setUTCHours"](k[0]);
+			untyped d["setUTCMinutes"](k[1]);
+			untyped d["setUTCSeconds"](k[2]);
+			return d;
+		case 10: // YYYY-MM-DD
+			var k = s.split("-");
+			return new Date(cast k[0],cast untyped k[1] - 1,cast k[2],0,0,0);
+		case 19: // YYYY-MM-DD hh:mm:ss
+			var k = s.split(" ");
+			var y = k[0].split("-");
+			var t = k[1].split(":");
+			return new Date(cast y[0],cast untyped y[1] - 1,cast y[2],cast t[0],cast t[1],cast t[2]);
+		default:
+			throw "Invalid date format : " + s;
+		}
+	}
 
 	private static function __init__() : Void untyped {
-		var d = Date;
-		d.now = function() {
-			return __new__(Date);
-		};
-		d.fromTime = function(t){
-			var d : Date = __new__(Date);
-			d["setTime"]( t );
-			return d;
-		};
-		d.fromString = function(s : String) {
-			switch( s.length ) {
-			case 8: // hh:mm:ss
-				var k = s.split(":");
-				var d : Date = __new__(Date);
-				d["setTime"](0);
-				d["setUTCHours"](k[0]);
-				d["setUTCMinutes"](k[1]);
-				d["setUTCSeconds"](k[2]);
-				return d;
-			case 10: // YYYY-MM-DD
-				var k = s.split("-");
-				return new Date(cast k[0],cast k[1] - 1,cast k[2],0,0,0);
-			case 19: // YYYY-MM-DD hh:mm:ss
-				var k = s.split(" ");
-				var y = k[0].split("-");
-				var t = k[1].split(":");
-				return new Date(cast y[0],cast y[1] - 1,cast y[2],cast t[0],cast t[1],cast t[2]);
-			default:
-				throw "Invalid date format : " + s;
-			}
-		};
-		d.prototype["toString"] = function() {
-			var date : Date = __this__;
-			var m = date.getMonth() + 1;
-			var d = date.getDate();
-			var h = date.getHours();
-			var mi = date.getMinutes();
-			var s = date.getSeconds();
-			return date.getFullYear()
-				+"-"+(if( m < 10 ) "0"+m else ""+m)
-				+"-"+(if( d < 10 ) "0"+d else ""+d)
-				+" "+(if( h < 10 ) "0"+h else ""+h)
-				+":"+(if( mi < 10 ) "0"+mi else ""+mi)
-				+":"+(if( s < 10 ) "0"+s else ""+s);
-		};
 		__feature__("Type.resolveClass", $hxClasses["Date"] = Date);
 	}
 }
