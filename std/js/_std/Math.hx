@@ -23,12 +23,12 @@
  * DAMAGE.
  */
 
-@:core_api extern class Math
+extern class Math
 {
 	static var PI(default,null) : Float;
-	static var NaN(default,null) : Float;
-	static var NEGATIVE_INFINITY(default,null) : Float;
-	static var POSITIVE_INFINITY(default,null) : Float;
+	static var NaN(getNaN,null) : Float;
+	static var NEGATIVE_INFINITY(getNEGINF,null) : Float;
+	static var POSITIVE_INFINITY(getPOSINF,null) : Float;
 
 	static function abs(v:Float):Float;
 	static function min(a:Float,b:Float):Float;
@@ -49,6 +49,21 @@
 	static function pow(v:Float,exp:Float):Float;
 	static function random() : Float;
 
+	static inline function getNaN():Float
+	{
+		return untyped Number["NaN"];
+	}
+
+	static inline function getNEGINF():Float
+	{
+		return untyped Number["NEGATIVE_INFINITY"];
+	}
+
+	static inline function getPOSINF():Float
+	{
+		return untyped Number["POSITIVE_INFINITY"];
+	}
+
 	static inline function isFinite( f : Float ) : Bool
 	{
 		return untyped __js__("isFinite")(f);
@@ -60,9 +75,6 @@
 	}
 
 	private static function __init__() : Void untyped {
-		Math.NaN = Number["NaN"];
-		Math.NEGATIVE_INFINITY = Number["NEGATIVE_INFINITY"];
-		Math.POSITIVE_INFINITY = Number["POSITIVE_INFINITY"];
 		__feature__("Type.resolveClass", $hxClasses["Math"] = Math);
 	}
 }
