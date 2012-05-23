@@ -41,7 +41,7 @@
 		return StringHelper.charCodeAt(this, index);
 	}
 
-	function substr( pos : Int, ?len : Int ) : String
+	inline function substr( pos : Int, ?len : Int ) : String
 	{
 		return StringHelper.substr(this, pos, len);
 	}
