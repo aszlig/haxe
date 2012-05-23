@@ -24,6 +24,8 @@
  */
 package js;
 
+import FunctionHelper;
+
 class Boot {
 
 	private static function __unhtml(s : String) {
@@ -184,70 +186,5 @@ class Boot {
 		else throw "Cannot cast " +Std.string(o) + " to " +Std.string(t);
 	}
 	
-	private static function __init() {
-		untyped {
-			Array.prototype.copy = Array.prototype.slice;
-			Array.prototype.insert = function(i,x) {
-				__this__.splice(i,0,x);
-			};
-			Array.prototype.remove = if( Array.prototype.indexOf ) function(obj) {
-				var idx = __this__.indexOf(obj);
-				if( idx == -1 ) return false;
-				__this__.splice(idx,1);
-				return true;
-			} else function(obj) {
-				var i = 0;
-				var l = __this__.length;
-				while( i < l ) {
-					if( __this__[i] == obj ) {
-						__this__.splice(i,1);
-						return true;
-					}
-					i++;
-				}
-				return false;
-			};
-			Array.prototype.iterator = function() {
-				return {
-					cur : 0,
-					arr : __this__,
-					hasNext : function() {
-						return __this__.cur < __this__.arr.length;
-					},
-					next : function() {
-						return __this__.arr[__this__.cur++];
-					}
-				}
-			};
-			if( String.prototype.cca == null )
-				String.prototype.cca = String.prototype.charCodeAt;
-			String.prototype.charCodeAt = function(i) {
-				var x = __this__.cca(i);
-				if( x != x ) // fast isNaN
-					return __js__('undefined'); // isNaN will still return true
-				return x;
-			};
-			var oldsub = String.prototype.substr;
-			String.prototype.substr = function(pos,len){
-				if( pos != null && pos != 0 && len != null && len < 0 ) return "";
-				if( len == null ) len = __this__.length;
-				if( pos < 0 ){
-					pos = __this__.length + pos;
-					if( pos < 0 ) pos = 0;
-				}else if( len < 0 ){
-					len = __this__.length + len - pos;
-				}
-				return oldsub.apply(__this__,[pos,len]);
-			};
-			Function.prototype["$bind"] = function(o){
-				var f = function(){
-					return f.method.apply(f.scope, untyped __js__("arguments"));
-				}
-				f.scope = o;
-				f.method = __this__;
-				return f;
-			}
-		}
-	}
-
+	private static function __init() {}
 }

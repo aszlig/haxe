@@ -343,7 +343,12 @@ let rec gen_call ctx e el =
 			spr ctx ")";
 		);
 	| TCall (x,_) , el when (match x.eexpr with TLocal { v_name = "__js__" } -> false | _ -> true) ->
-		spr ctx "(";
+		(match x.eexpr with
+		| TLocal { v_name = "iterator" } ->
+			spr ctx "ArrayHelper.iter(";
+		| _ ->
+			spr ctx "(";
+		);
 		gen_value ctx e;
 		spr ctx ")";
 		spr ctx "(";
@@ -399,8 +404,8 @@ and gen_expr ctx e =
 		gen_value ctx e1;
 		print ctx " %s " (Ast.s_binop op);
 		gen_value ctx e2;
-	| TField (x,"iterator") when Common.defined ctx.com "js-iterator-wrap" ->
-		print ctx "$iterator(";
+	| TField (x,"iterator") ->
+		print ctx "ArrayHelper.iter(";
 		gen_value ctx x;
 		print ctx ")";
 	| TField (x,s) ->
@@ -412,14 +417,15 @@ and gen_expr ctx e =
 	| TClosure (x,s) ->
 		(match x.eexpr with
 		| TConst _ | TLocal _ ->  
-			gen_value ctx x; 
-			print ctx ".%s.$bind(" s; 
-			gen_value ctx x; 
+			print ctx "FunctionHelper.bind(";
+			gen_value ctx x;
+			print ctx ".%s," s;
+			gen_value ctx x;
 			print ctx ")"
 		| _ -> 
 			print ctx "($_=";
 			gen_value ctx x;
-			print ctx ",$_.%s.$bind($_))" s)
+			print ctx ",FunctionHelper.bind($_.%s, $_))" s)
 	| TTypeExpr t ->
 		spr ctx (ctx.type_accessor t)
 	| TParenthesis e ->

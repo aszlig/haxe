@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005, The haXe Project Contributors
+ * Copyright (c) 2012, The haXe Project Contributors
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -23,15 +23,12 @@
  * DAMAGE.
  */
 
-/**
-	This class defines mathematical functions and constants.
-**/
 extern class Math
 {
 	static var PI(default,null) : Float;
-	static var NaN(default,null) : Float;
-	static var NEGATIVE_INFINITY(default,null) : Float;
-	static var POSITIVE_INFINITY(default,null) : Float;
+	static var NaN(getNaN,null) : Float;
+	static var NEGATIVE_INFINITY(getNEGINF,null) : Float;
+	static var POSITIVE_INFINITY(getPOSINF,null) : Float;
 
 	static function abs(v:Float):Float;
 	static function min(a:Float,b:Float):Float;
@@ -52,42 +49,32 @@ extern class Math
 	static function pow(v:Float,exp:Float):Float;
 	static function random() : Float;
 
-	static function isFinite( f : Float ) : Bool;
-	static function isNaN( f : Float ) : Bool;
-
-	private static function __init__() : Void untyped {
-	#if flash9
-		NaN = __global__["Number"].NaN;
-		NEGATIVE_INFINITY = __global__["Number"].NEGATIVE_INFINITY;
-		POSITIVE_INFINITY = __global__["Number"].POSITIVE_INFINITY;
-	#else
-		Math.__name__ = ["Math"];
-		Math.NaN = Number["NaN"];
-		Math.NEGATIVE_INFINITY = Number["NEGATIVE_INFINITY"];
-		Math.POSITIVE_INFINITY = Number["POSITIVE_INFINITY"];
-	#end
-		Math.isFinite = function(i) {
-			return
-			#if flash9
-			__global__["isFinite"](i);
-			#elseif flash
-			_global["isFinite"](i);
-			#else
-			false;
-			#end
-		};
-		Math.isNaN = function(i) {
-			return
-			#if flash9
-			__global__["isNaN"](i);
-			#elseif flash
-			_global["isNaN"](i);
-			#else
-			false;
-			#end
-		};
+	static inline function getNaN():Float
+	{
+		return untyped Number["NaN"];
 	}
 
+	static inline function getNEGINF():Float
+	{
+		return untyped Number["NEGATIVE_INFINITY"];
+	}
+
+	static inline function getPOSINF():Float
+	{
+		return untyped Number["POSITIVE_INFINITY"];
+	}
+
+	static inline function isFinite( f : Float ) : Bool
+	{
+		return untyped __js__("isFinite")(f);
+	}
+
+	static inline function isNaN( f : Float ) : Bool
+	{
+		return untyped __js__("isNaN")(f);
+	}
+
+	private static function __init__() : Void untyped {
+		__feature__("Type.resolveClass", $hxClasses["Math"] = Math);
+	}
 }
-
-

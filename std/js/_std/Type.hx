@@ -57,7 +57,26 @@ enum ValueType {
 
 
 	public static function getClassName( c : Class<Dynamic> ) : String {
-		var a : Array<String> = untyped c.__name__;
+		var a : Array<String> = switch( untyped __js__("typeof")(c) ) {
+			case "object":
+				switch( untyped Object.prototype.toString.call(c) ) {
+					case "[object Math]": ["Math"];
+					case "[object Date]": ["Date"];
+					// no "[object String]" - handled below.
+					case "[object Array]": ["Array"];
+					default: untyped c.__name__;
+				}
+			case "function":
+				switch( untyped Object.prototype.toString.call(c.prototype) ) {
+					case "[object Math]": ["Math"];
+					case "[object Date]": ["Date"];
+					case "[object String]": ["String"];
+					case "[object Array]": ["Array"];
+					default: untyped c.__name__;
+				}
+			case "string": ["String"];
+			default: untyped c.__name__;
+		}
 		return a.join(".");
 	}
 
@@ -69,9 +88,13 @@ enum ValueType {
 	public static function resolveClass( name : String ) : Class<Dynamic> untyped {
 		var cl : Class<Dynamic> = $hxClasses[name];
 		// ensure that this is a class
-		if( cl == null || cl.__name__ == null )
-			return null;
-		return cl;
+		return cl == null ? null : switch( name ) {
+			case "Math": cl;
+			case "Date": cl;
+			case "String": cl;
+			case "Array": cl;
+			default: cl.__name__ == null ? null : cl;
+		}
 	}
 
 	public static function resolveEnum( name : String ) : Enum<Dynamic> untyped {
@@ -172,11 +195,23 @@ enum ValueType {
 			var c = v.__class__;
 			if( c != null )
 				return TClass(c);
-			return TObject;
+			return switch( Object.prototype.toString.call(v) ) {
+				case "[object Array]": TClass(Array);
+				// no "[object String]" - handled above.
+				case "[object Math]": TClass(Math);
+				case "[object Date]": TClass(Date);
+				default: TObject;
+			}
 		case "function":
 			if( v.__name__ != null )
 				return TObject;
-			return TFunction;
+			return switch( Object.prototype.toString.call(v.prototype) ) {
+				case "[object Math]": TObject;
+				case "[object Date]": TObject;
+				case "[object Array]": TObject;
+				case "[object String]": TObject;
+				default: TFunction;
+			}
 		case "undefined":
 			return TNull;
 		default:
