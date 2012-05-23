@@ -34,6 +34,7 @@
 	function split( delimiter : String ) : Array<String>;
 	function toString() : String;
 	static function fromCharCode( code : Int ) : String;
+	function substring( startIndex : Int, ?endIndex : Int ) : String;
 
 	inline function charCodeAt( index : Int) : Null<Int>
 	{
